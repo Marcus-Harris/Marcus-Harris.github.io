@@ -1,0 +1,13 @@
+<div class="dialog-text"> Are you sure you wish to delete?</div>
+<div class="name-container">
+  <div>{{data.investment.name}}</div>
+  <div style="color: #6c757d">Bought on {{data.investment.date_Bought | date:'MMMM dd, yyyy'}}</div>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <button mat-raised-button class="mat-button-base" color="secondary" style="float: left; margin: 20px" (click)="decline()">
+    Cancel
+  </button>
+  <button mat-button class="mat-focus-indicator mat-button-base" color="warn" style="float: right; margin: 20px" (click)="accept()">
+    Delete
+  </button>
+</div>

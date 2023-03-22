@@ -1,0 +1,39 @@
+.grid-container {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.chart-button {
+  height: 460px;
+  width: 460px;
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.pie-chart {
+  width: 400px !important;
+  height: 400px !important;
+}
+
+.bar-chart {
+  width: 450px !important;
+  height: 275px !important;
+}
+
+.radar-chart {
+  height: 420px;
+  width: 420px;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: rgb(0, 195, 255);
+}
+
+.empty-container {
+  min-height: 475px;
+  max-height: 475px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

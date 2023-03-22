@@ -1,0 +1,42 @@
+<div *ngIf="!investmentsLoading && !typesLoading && chartLabels && chartLabels.length != 0" class="main-container">
+  <div class="grid-container">
+    <mat-grid-list cols="2" rowHeight="1:1" *ngIf="investments!.length != 0 && investmentTypes!.length != 0">
+      <mat-grid-tile>
+        <button mat-raised-button class="mat-button-base chart-button">
+          <h3 style="text-align: center;">Number of Investments</h3>
+          <canvas baseChart [data]="totalInvestmentsBarChart" [type]="barChartType" [options]="chartOptions"
+            class="bar-chart chart"></canvas>
+        </button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-raised-button class="mat-button-base chart-button">
+          <h3 style="text-align: center;">Current Portfolio</h3>
+          <canvas baseChart [data]="currentPortfolioPieChart" [type]="pieChartType" [options]="chartOptions"
+            class="pie-chart chart"></canvas>
+        </button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-raised-button class="mat-button-base chart-button">
+          <h3 style="text-align: center;">Net Profits</h3>
+          <canvas baseChart [data]="netProfitPieChart" [type]="pieChartType" [options]="chartOptions"
+            class="pie-chart chart"></canvas>
+        </button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-raised-button class="mat-button-base chart-button">
+          <h3 style="text-align: center;">Average Cost</h3>
+          <canvas baseChart [data]="averageCostBarChart" [type]="barChartType" [options]="chartOptions"
+            class="bar-chart chart"></canvas>
+        </button>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <div class="empty-container" *ngIf="investments!.length == 0 || investments == undefined || investmentTypes!.length == 0 || investmentTypes == undefined">
+    <h3>There Are No Investments Or Investment Types To Have Any Statistics</h3>
+  </div>
+</div>
+
+<mat-spinner *ngIf="investmentsLoading || typesLoading || !chartLabels || chartLabels!.length == 0"
+  style="margin: 20px auto">
+</mat-spinner>

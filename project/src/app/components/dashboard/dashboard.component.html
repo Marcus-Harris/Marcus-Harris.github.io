@@ -1,0 +1,296 @@
+<mat-drawer-container class="body" *ngIf="!loading">
+  <mat-drawer *ngIf="!loading" class="investment-form-panel" mode="over" position="end" [(opened)]="showInvestmentForm" fixedInViewport="true">
+    <div class="investment-detail-header-top">
+      <button mat-button color="button-theme" (click)="showInvestmentForm = false; editMode = false; addMode = false; resetControls();">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- <mat-card-header class="investment-detail-header-top" [ngStyle]="{'padding-left': investments!.length === 0 ? '32px' : ''}"> -->
+    <mat-card-header class="investment-detail-header-top">
+      <div class="flex flex-auto items-end -mt-16">
+        <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+          <div class="flex items-center justify-center w-full h-full rounded">
+            <div *ngIf="currentInvestment" class="investment-detail-header-image">
+              {{currentInvestment.name.charAt(0)}}
+            </div>
+            <div *ngIf="!currentInvestment" class="investment-detail-header-image text-secondary">
+              None
+            </div>
+            <div class="investment-detail-header" style="margin-left: 80px">
+              {{currentInvestment?.name}} <span *ngIf="currentInvestment?.ticker" style="font-size: medium;">({{currentInvestment?.ticker!.toUpperCase()}})</span>
+              <div *ngIf="!currentInvestment?.revenue && !addMode" class="text-secondary">
+                Currently Unsold
+              </div>              
+              <div *ngIf="currentInvestment?.revenue" class="text-secondary">
+                 Sold on {{currentInvestment?.date_Sold | date:'MMMM dd, yyyy'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <div style="background-color: rgb(0, 195, 255); color: white;">
+      <div class="investment-detail" style="margin-left: 60px; font-size: medium; height: 27px">
+        <mat-icon *ngIf="currentInvestment?.type" style="padding-right: 25px; padding-left: 5px;">label</mat-icon>
+        <div *ngIf="currentInvestment?.type">{{currentInvestment?.type}}</div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div style="padding: 10px"></div>
+    <div class="investment-detail" fxLayout="column">
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">*Is This Sold?</mat-label>
+        <mat-radio-group aria-label="Select an option" style="margin-right: 80px;" [(ngModel)]="statusRadioButton">
+          <mat-radio-button value="yes" (click)="isInvestmentSoldChecker('yes')">Yes</mat-radio-button>
+          <mat-radio-button value="no" (click)="isInvestmentSoldChecker('no')">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <mat-error *ngIf="isInvestmentSoldYetControl.touched && isInvestmentSoldYetControl.hasError('required')">
+        This Selector is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">*Name:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;">assignment_ind</mat-icon>
+          <input matInput [(ngModel)]="currentInvestment!.name!" [formControl]="nameControl" />
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="nameControl.touched && nameControl.hasError('required')">
+        Name is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">*Type:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;">class</mat-icon>
+          <input type="text" matInput [formControl]="typeControl" [matAutocomplete]="typeAutocomplete"
+            [(ngModel)]="currentInvestment!.type"  />
+          <mat-autocomplete #typeAutocomplete="matAutocomplete" (optionSelected)="isTickerNeeded()">
+            <mat-option *ngFor="let type of investmentTypes" [value]="type.type">{{type.type}}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="typeControl.touched && typeControl.hasError('required')">
+        Type is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item" *ngIf="tickerControl.enabled">*Ticker:</mat-label>
+        <mat-label class="investment-detail-item" *ngIf="tickerControl.disabled" style="opacity: 20%;">Ticker:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;" *ngIf="tickerControl.enabled">class</mat-icon>
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;" *ngIf="tickerControl.disabled" style="opacity: 20%;">branding_watermark</mat-icon>
+          <input matInput [(ngModel)]="currentInvestment!.ticker" [formControl]="tickerControl" />
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="tickerControl.touched && tickerControl.hasError('required')">
+        Ticker is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">*Purchase Date:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <input matInput [matDatepicker]="picker" [(ngModel)]="currentInvestment!.date_Bought" 
+            [formControl]="dateBoughtControl" placeholder="Date Bought">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>        
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="dateBoughtControl.touched && dateBoughtControl.hasError('required')">
+        Purchase Date is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item" *ngIf="dateSoldControl.enabled">*Sell Date:</mat-label>
+        <mat-label class="investment-detail-item" *ngIf="dateSoldControl.disabled" style="opacity: 20%;">Sell Date:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="currentInvestment!.date_Sold" [formControl]="dateSoldControl">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2" *ngIf="dateSoldControl.enabled"></mat-datepicker-toggle>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2" *ngIf="dateSoldControl.disabled" style="opacity: 20%;"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>      
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="dateSoldControl.touched && dateSoldControl.hasError('required')">
+        Sell Date is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">*Cost:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;">attach_money</mat-icon>
+          <input matInput [(ngModel)]="currentInvestment!.cost" [formControl]="costControl" />
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="costControl.touched && costControl.hasError('required')">
+        Cost is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item" *ngIf="revenueControl.enabled">*Revenue:</mat-label>
+        <mat-label class="investment-detail-item" *ngIf="revenueControl.disabled" style="opacity: 20%;">Revenue:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;" *ngIf="revenueControl.enabled">attach_money</mat-icon>
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;" *ngIf="revenueControl.disabled" style="opacity: 20%;">attach_money</mat-icon>
+          <input matInput [(ngModel)]="currentInvestment!.revenue" [formControl]="revenueControl" />
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="revenueControl.touched && revenueControl.hasError('required')">
+        Revenue is Required
+      </mat-error>
+
+      <div class="investment-input-row" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="editMode">
+        <mat-label class="investment-detail-item">Dividends:</mat-label>
+        <mat-form-field appearance="outline" class="investment-detail-input">
+          <mat-icon matPrefix class="text-secondary input-icon" style="margin-top: 10px;">attach_money</mat-icon>
+          <input matInput [(ngModel)]="currentInvestment!.dividends" />
+        </mat-form-field>
+      </div>
+
+      <div style="padding: 24px 0 24px 0; display: flex; justify-content: space-between;" *ngIf="editMode">
+        <button mat-button class="mat-focus-indicator mat-button-base" color="warn" (click)="openDeleteDialog()">
+          Delete
+        </button>
+        <button mat-raised-button class="mat-focus-indicator mat-button-base" color="secondary"
+          style="float: right;" (click)="resetInvestmentValues()">
+          Cancel
+        </button>
+        <button *ngIf="!addMode" mat-raised-button class="mat-focus-indicator mat-button-base" color="button-theme"
+          style="float: right; width: 80px; background-image: linear-gradient(to bottom right, #000062, black); color: white;" 
+          class="save-button" (click)="updateInvestment()">
+          Save
+        </button>
+        <button *ngIf="addMode" mat-raised-button class="mat-focus-indicator mat-button-base" color="button-theme"
+          style="float: right; width: 80px; background-image: linear-gradient(to bottom right, #000062, black); color: white;" 
+          class="addition-button" (click)="addInvestment()">
+          Add
+        </button>
+        <div class="error-banner">{{ errorMessage }}</div>
+      </div>
+
+      <div *ngIf="!editMode">
+        <button class="edit-button" mat-raised-button color="button-theme" (click)="checkStatusOnEdit()">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+      </div>
+    </div>
+  </mat-drawer>
+
+  <span id="button-investment-container">
+    <button class="add-button" mat-raised-button color="button-theme" (click)="showAddMode()">
+      <mat-icon>add</mat-icon>
+      Add Investment
+    </button>
+    <div class="investment-count">Total Investments: {{totalInvestments}}</div>
+    <div class="legend-container">
+      <mat-grid-list cols="2" rowHeight="3:1" class="legend">
+        <mat-grid-tile class="profit">Profit / 7%+</mat-grid-tile>
+        <mat-grid-tile class="loss">Loss / 0%-</mat-grid-tile>
+        <mat-grid-tile class="mid-percentage">0.01%-6.99%</mat-grid-tile>
+        <mat-grid-tile class="unsold">Unsold</mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </span>
+
+  <div class="table-container" *ngIf="investments!.length != 0">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 investment-table">
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        <td mat-footer-cell *matFooterCellDef #tooltip="matTooltip" matTooltip="Excludes Unsold Investments" [matTooltipPosition]="'right'">Total<mat-icon class="material-icon total-help-icon" style="margin: auto 0 -10px 0 !important;">help</mat-icon></td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let element">{{element.type}}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="purchase-date">
+        <th mat-header-cell *matHeaderCellDef>Purchase Date</th>
+        <td mat-cell *matCellDef="let element">{{element.date_Bought | date:'MMMM dd, yyyy'}}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="sell-date">
+        <th mat-header-cell *matHeaderCellDef>Sell Date</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.status == 'Sold'">{{element.date_Sold | date:'MMMM dd, yyyy'}}</div>
+          <div *ngIf="element.status == 'Unsold'" class="undefined">----------</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef>Cost</th>
+        <td mat-cell *matCellDef="let element">${{element.cost | number : '1.2-2'}}</td>
+        <td mat-footer-cell *matFooterCellDef>${{totalCost | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="revenue">
+        <th mat-header-cell *matHeaderCellDef>Revenue</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.status == 'Sold'">${{element.revenue | number : '1.2-2'}}</div>
+          <div *ngIf="element.status == 'Unsold'" class="undefined">----------</div>        
+        </td>
+        <td mat-footer-cell *matFooterCellDef>${{totalRevenue | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dividends">
+        <th mat-header-cell *matHeaderCellDef #tooltip="matTooltip" matTooltip="Or Interest" [matTooltipPosition]="'above'">Dividends<mat-icon class="material-icon total-help-icon" style="margin: 0 0 -14px -4px !important;">help</mat-icon></th>
+        <td mat-cell *matCellDef="let element">${{element.dividends | number : '1.2-2'}}</td>
+        <td mat-footer-cell *matFooterCellDef>${{totalDividends | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="percentage">
+        <th mat-header-cell *matHeaderCellDef>Percentage</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'profit': element.net_Profit_Percentage >= 7, 
+        'mid-percentage': (element.net_Profit_Percentage < 7 && element.net_Profit_Percentage > 0), 
+        'loss': (element.net_Profit_Percentage <= 0 && 
+        (element.net_Profit_Percentage != undefined && element.net_Profit_Percentage != null)), 
+        'highest': element.net_Profit_Percentage == highestPercentage}">
+          <div *ngIf="element.status == 'Sold'">{{element.net_Profit_Percentage | number : '1.2-2'}}%</div>
+          <div *ngIf="element.status == 'Unsold'" class="undefined">----------</div>            
+        </td>
+        <td mat-footer-cell *matFooterCellDef [ngClass]="{'profit': totalNetProfitPercentage! > 7, 'mid-percentage': (totalNetProfitPercentage! < 7 && totalNetProfitPercentage! > 0), 'loss': totalNetProfitPercentage! <= 0}">{{totalNetProfitPercentage | number : '1.2-2'}}%</td>
+      </ng-container>
+
+      <ng-container matColumnDef="net-profit">
+        <th mat-header-cell *matHeaderCellDef>Net Profit</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'profit': element.net_Profit > 0, 
+        'loss': (element.net_Profit <= 0 && 
+        (element.net_Profit != undefined && element.net_Profit != null)), 
+        'highest': element.net_Profit == highestProfit}">
+          <div *ngIf="element.status == 'Sold'">${{element.net_Profit | number : '1.2-2'}}</div>
+          <div *ngIf="element.status == 'Unsold'" class="undefined">----------</div>         
+        </td>
+        <td mat-footer-cell *matFooterCellDef [ngClass]="{'profit': totalNetProfit! > 0, 'loss': totalNetProfit! <= 0}">${{totalNetProfit | number : '1.2-2'}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'unsold': row.status == 'Unsold'}" (click)="showInvestment(row)"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true;"></tr>
+    </table>
+  </div>
+
+  <div class="empty-container" *ngIf="investments!.length == 0 || investments == undefined">
+    <h3>There Are No Current Investments</h3>
+  </div>
+</mat-drawer-container>
+
+<mat-spinner *ngIf="loading" style="margin: 20px auto"></mat-spinner>

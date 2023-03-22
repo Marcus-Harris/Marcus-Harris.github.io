@@ -1,0 +1,10 @@
+.dialog-text {
+  text-align: center;
+  padding: 10px;
+}
+
+.name-container {
+  height: 65px;
+  background-color: lavender;
+  padding: 5px;
+}

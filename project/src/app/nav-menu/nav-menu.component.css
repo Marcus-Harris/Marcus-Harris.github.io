@@ -1,0 +1,51 @@
+.body {
+  color: white;
+  margin-right: 2%;
+}
+
+.header,
+.avatar-container {
+  text-align: center;
+}
+
+.header {
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+.circle {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+  border: solid rgb(0, 195, 255) 3px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.home-button {
+  color: white;
+  cursor: pointer;
+}
+
+::ng-deep .avatar {
+  font-size: 48px;
+}
+
+mat-divider {
+  margin: 20px auto;
+  width: 85%;
+}
+
+.link {
+  margin: 5% 0 5% 10%;
+  display: flex;
+  align-items: center !important;
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: rgb(0, 195, 255);
+}
