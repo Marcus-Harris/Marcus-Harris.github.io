@@ -1,0 +1,32 @@
+﻿using InvestmentPortfolio.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace InvestmentPortfolio
+{
+    public class Investment
+    {
+        public int ID { get; set; }
+        public string Name { get; set; } = String.Empty;
+        //public string Ticker { get; set; } = String.Empty;
+        public string? Ticker { get; set; }
+        public string Type { get; set; } = String.Empty;
+        //[JsonConverter(typeof(DateOnlyJsonConverter))]
+        //public DateTime Date_Bought { get; set; } = new DateTime().Date;
+
+        public DateTime Date_Bought { get; set; } = new DateTime();
+
+        //[JsonConverter(typeof(DateOnlyJsonConverter))]
+
+        //public DateTime? Date_Sold { get; set; } = null;
+        public DateTime? Date_Sold { get; set; } = null;
+
+        public string Status { get; set; } = String.Empty;
+        public double Cost { get; set; }
+        public double? Revenue { get; set; } = null;
+        public double? Dividends { get; set; } = 0;
+        public double? Net_Profit_Percentage { get; set; }
+        public double? Net_Profit { get; set; }
+    }
+}
