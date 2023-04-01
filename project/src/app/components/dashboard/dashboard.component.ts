@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators } from '@angular/forms';
-// import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -73,22 +73,23 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.getAllInvestmentTypes();
-    this.getAllInvestments();
+    this.getTotals();
   }
 
-  public getAllInvestments() {
-    this.loading = true;
-    this.totalCost = 0;
-    this.totalRevenue = 0;
-    this.totalDividends = 0;
-    this.totalNetProfitPercentage = 0;
-    this.totalNetProfit = 0;
-    this.highestPercentage = 0;
-    this.highestProfit = 0;
-    this.service.getInvestments()
-    .subscribe((res) => {
-      res.forEach(x => {
+  public getTotals() {
+    forkJoin([
+      this.service.getInvestments(),
+      this.service.getInvestmentTypes()
+    ]).subscribe((res) => {
+      this.totalCost = 0;
+      this.totalRevenue = 0;
+      this.totalDividends = 0;
+      this.totalNetProfitPercentage = 0;
+      this.totalNetProfit = 0;
+      this.highestPercentage = 0;
+      this.highestProfit = 0;
+
+      res[0].forEach(x => {
         if(x.status == "Sold") {
           this.totalCost = this.totalCost + x.cost;
           this.totalRevenue = this.totalRevenue + x.revenue!;
@@ -97,24 +98,14 @@ export class DashboardComponent implements OnInit {
           this.totalNetProfit = (this.totalRevenue + this.totalDividends) - this.totalCost;
         }
        })
-      this.investments = res;
+      this.investments = res[0];
+      this.investmentTypes = res[1];
       this.dataSource = new MatTableDataSource(this.investments);
-      this.highestPercentage = Math.max(...res.map(o => o.net_Profit_Percentage!));
-      this.highestProfit = Math.max(...res.map(o => o.net_Profit!));
-      this.totalInvestments = res.length;
-      this.loading = false;
-    }, (error) => {
-      this.errorMessage = error.errorMessage;
-    });
-  }
-
-  public getAllInvestmentTypes() {
-    this.service.getInvestmentTypes()
-      .subscribe((res) => {
-        this.investmentTypes = res;
-    }, (error) => {
-      this.errorMessage = error.errorMessage;
-    });
+      this.highestPercentage = Math.max(...res[0].map(o => o.net_Profit_Percentage!));
+      this.highestProfit = Math.max(...res[0].map(o => o.net_Profit!));
+      this.totalInvestments = res[0].length;
+      this.loading = false;      
+    })
   }
 
   showAddMode() {
@@ -236,11 +227,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // removeHoursMinutesSecondsMilliseconds(dateController: FormControl) {
-  //   dateController.setValue(moment(dateController.value?.toString()).hour(0).minute(0).second(0).millisecond(0).toLocaleString());
-  //   console.log(dateController.value);
-  // }
-
   addInvestment() {
     if(this.checkForErrors()) {
       return;
@@ -256,7 +242,7 @@ export class DashboardComponent implements OnInit {
           this.showInvestmentForm = false;
 
           this.resetControls();
-          this.getAllInvestments();
+          this.getTotals();
         }, (error) => {
           this.errorMessage = error.errorMessage;
         }
@@ -281,7 +267,7 @@ export class DashboardComponent implements OnInit {
           this.showInvestmentForm = false;
 
           this.resetControls();
-          this.getAllInvestments();
+          this.getTotals();
         }, (error) => {
           this.errorMessage = error.errorMessage;
         }
@@ -299,7 +285,7 @@ export class DashboardComponent implements OnInit {
         if (this.currentInvestment) {
           this.service.deleteInvestment(this.currentInvestment.id)
           .subscribe(() => {
-            this.getAllInvestments();
+            this.getTotals();
           })
         this.addMode = false;
         this.editMode = false;
