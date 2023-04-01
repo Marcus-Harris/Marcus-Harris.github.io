@@ -9,17 +9,10 @@ namespace InvestmentPortfolio
     {
         public int ID { get; set; }
         public string Name { get; set; } = String.Empty;
-        //public string Ticker { get; set; } = String.Empty;
         public string? Ticker { get; set; }
         public string Type { get; set; } = String.Empty;
-        //[JsonConverter(typeof(DateOnlyJsonConverter))]
-        //public DateTime Date_Bought { get; set; } = new DateTime().Date;
 
         public DateTime Date_Bought { get; set; } = new DateTime();
-
-        //[JsonConverter(typeof(DateOnlyJsonConverter))]
-
-        //public DateTime? Date_Sold { get; set; } = null;
         public DateTime? Date_Sold { get; set; } = null;
 
         public string Status { get; set; } = String.Empty;
