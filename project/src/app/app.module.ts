@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { DashboardComponent, InvestmentDialogDelete } from './components/dashboard/dashboard.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
+// import { SearchPipe } from './services/search.pipe';
 
 import { HttpClientModule } from '@angular/common/http'
 
@@ -42,7 +43,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     NavMenuComponent,
     DashboardComponent,
     StatisticsComponent,
-    InvestmentDialogDelete
+    InvestmentDialogDelete,
+    // SearchPipe
   ],
   imports: [
     BrowserModule,
