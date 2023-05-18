@@ -17,6 +17,7 @@ import { forkJoin } from 'rxjs';
 export class DashboardComponent implements OnInit {
   investmentTypes?: InvestmentType[];
   investments?: Investment[];
+  filteredArray?: Investment[];
 
   totalInvestments?: number;
   totalCost: number = 0;
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
   isInvestmentSoldYetControl = new FormControl('', [Validators.required])
 
   errorMessage?: string = '';
-  globalSearch: string = '';
+  searchFilter: string = '';
 
   dataSource = new MatTableDataSource<Investment>();
   displayedColumns: string[] = 
@@ -88,7 +89,6 @@ export class DashboardComponent implements OnInit {
       this.totalNetProfit = 0;
       this.highestPercentage = 0;
       this.highestProfit = 0;
-
       res[0].forEach(x => {
         if(x.status == "Sold") {
           this.totalCost = this.totalCost + x.cost;
@@ -97,14 +97,44 @@ export class DashboardComponent implements OnInit {
           this.totalNetProfitPercentage = (((this.totalRevenue + this.totalDividends) - this.totalCost) / this.totalCost) * 100;
           this.totalNetProfit = (this.totalRevenue + this.totalDividends) - this.totalCost;
         }
-       })
+      })
       this.investments = res[0];
       this.investmentTypes = res[1];
+      this.filteredArray = this.investments;
       this.dataSource = new MatTableDataSource(this.investments);
+      this.dataSource.filterPredicate = (data: Investment, filter: string) => {
+        return data.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase());
+      };
       this.highestPercentage = Math.max(...res[0].map(o => o.net_Profit_Percentage!));
       this.highestProfit = Math.max(...res[0].map(o => o.net_Profit!));
       this.totalInvestments = res[0].length;
       this.loading = false;      
+    })
+  }
+
+  applyFilter(filter: string) {
+    this.dataSource.filter = filter;
+
+    this.filteredArray = this.dataSource.data.filter((item: Investment) => {
+      return item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+    });
+
+    this.totalCost = 0;
+    this.totalRevenue = 0;
+    this.totalDividends = 0;
+    this.totalNetProfitPercentage = 0;
+    this.totalNetProfit = 0;
+    this.highestPercentage = 0;
+    this.highestProfit = 0;
+
+    this.filteredArray.forEach(x => {
+      if(x.status == "Sold") {
+        this.totalCost = this.totalCost + x.cost;
+        this.totalRevenue = this.totalRevenue + x.revenue!;
+        this.totalDividends = this.totalDividends + x.dividends;
+        this.totalNetProfitPercentage = (((this.totalRevenue + this.totalDividends) - this.totalCost) / this.totalCost) * 100;
+        this.totalNetProfit = (this.totalRevenue + this.totalDividends) - this.totalCost;
+      }
     })
   }
 

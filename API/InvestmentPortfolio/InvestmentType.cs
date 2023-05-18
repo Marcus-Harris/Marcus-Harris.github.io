@@ -2,7 +2,7 @@
 {
     public class InvestmentType
     {
-        public int ID { get; set; }
-        public string Type { get; set; } = string.Empty;
+      public int ID { get; set; }
+      public string Type { get; set; } = string.Empty;
     }
 }

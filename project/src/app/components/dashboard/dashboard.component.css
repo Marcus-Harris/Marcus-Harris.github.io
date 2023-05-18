@@ -159,11 +159,15 @@
 
 .legend-container {
   float: right;
-  /* margin-right: 30px; */
-  margin: .4% 30px 0 0 !important;
+  margin: .4% 25px 0 -20px !important;
   height: fit-content;
   width: 200px;
   border: solid black 1px;
+}
+
+.search-bar {
+  width: 35% !important;
+  margin-left: 5%;
 }
 
 .investment-count {
@@ -179,7 +183,7 @@
 .table-container {
   padding: 0;
   overflow-y: scroll;
-  min-height: 424px;
+  min-height: fit-content;
   max-height: 424px;
   border: solid #bfbfbf 2px;
 }
