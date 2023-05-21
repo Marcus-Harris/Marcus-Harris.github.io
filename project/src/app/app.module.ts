@@ -32,10 +32,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { TreeModule } from '@circlon/angular-tree-component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SettingsComponent } from './components/settings/settings.component';
+import { InvestmentTypeSettingsComponent } from './components/settings/investment-type-settings/investment-type-settings.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     DashboardComponent,
     StatisticsComponent,
     InvestmentDialogDelete,
-    // SearchPipe
+    SettingsComponent,
+    InvestmentTypeSettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +78,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatRadioModule,
     MatProgressSpinnerModule,
     MatGridListModule,
+    MatTabsModule,
     TreeModule,
     FlexLayoutModule,
     FontAwesomeModule,
