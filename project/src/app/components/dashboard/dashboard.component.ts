@@ -136,6 +136,10 @@ export class DashboardComponent implements OnInit {
         this.totalNetProfit = (this.totalRevenue + this.totalDividends) - this.totalCost;
       }
     })
+
+    this.highestPercentage = Math.max(...this.filteredArray.map(o => o.net_Profit_Percentage!));
+    this.highestProfit = Math.max(...this.filteredArray.map(o => o.net_Profit!));
+    this.totalInvestments = this.filteredArray.length;
   }
 
   showAddMode() {
