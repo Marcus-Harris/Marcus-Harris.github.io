@@ -8,5 +8,6 @@ namespace InvestmentPortfolio.Data
 
         public DbSet<Investment> Investments => Set<Investment>();
         public DbSet<InvestmentType> InvestmentTypes => Set<InvestmentType>();
+        public DbSet<History> History => Set<History>();
     }
 }

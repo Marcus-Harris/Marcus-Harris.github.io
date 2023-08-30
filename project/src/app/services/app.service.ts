@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Investment } from '../models/investment';
 import { InvestmentType } from '../models/investment-type';
+import { History } from '../models/history';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { InvestmentType } from '../models/investment-type';
 export class AppService {
   private investmentURI = "Investment";
   private investmentTypeURI = "InvestmentType";
+  private historyURI = "History";
 
   constructor(private http: HttpClient) { }
 
@@ -132,5 +134,17 @@ export class AppService {
     }
     
     return this.http.delete<InvestmentType[]>(`${environment.apiURL}${this.investmentTypeURI}/${id}`, headerDict);
+  }
+
+  public getHistory() : Observable<History[]> {
+    const headerDict = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      })
+    }
+
+    return this.http.get<History[]>(`${environment.apiURL}${this.historyURI}`, headerDict);
   }
 }
