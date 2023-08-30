@@ -39,6 +39,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InvestmentTypeSettingsComponent } from './components/settings/investment-type-settings/investment-type-settings.component';
+import { HistorySettingsComponent } from './components/settings/history-settings/history-settings.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { InvestmentTypeSettingsComponent } from './components/settings/investmen
     InvestmentDialogDelete,
     SettingsComponent,
     InvestmentTypeSettingsComponent,
+    HistorySettingsComponent,
   ],
   imports: [
     BrowserModule,
