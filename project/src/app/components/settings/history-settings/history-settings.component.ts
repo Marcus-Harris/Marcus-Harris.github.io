@@ -36,9 +36,8 @@ export class HistorySettingsComponent implements OnInit {
       this.service.getHistory()
     ]).subscribe((res) => {
       this.history = res[0];
-      this.dataSource = new MatTableDataSource(this.history);
+      this.dataSource = new MatTableDataSource(this.history);  
+      this.loading = false;
     })
-
-    this.loading = false;
   }
 }

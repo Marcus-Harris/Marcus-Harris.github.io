@@ -40,8 +40,8 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "TESTING has been added as a type."
-latestHistoryID = history[historyLength - 1]["id"]
+assert history[0]["entry"] == "TESTING has been added as a type."
+latestHistoryID = history[0]["id"]
 
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
@@ -63,9 +63,9 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "TESTING has been renamed as TEST."
+assert history[0]["entry"] == "TESTING has been renamed as TEST."
 
-latestHistoryID = history[historyLength - 1]["id"]
+latestHistoryID = history[0]["id"]
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
 assert historyResponse.status_code == 200
@@ -92,9 +92,9 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "TEST has been deleted as a type."
+assert history[0]["entry"] == "TEST has been deleted as a type."
 
-latestHistoryID = history[historyLength - 1]["id"]
+latestHistoryID = history[0]["id"]
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
 assert historyResponse.status_code == 200

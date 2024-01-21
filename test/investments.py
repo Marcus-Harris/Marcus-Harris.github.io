@@ -51,8 +51,8 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "Test Stock has been added to your investments."
-latestHistoryID = history[historyLength - 1]["id"]
+assert history[0]["entry"] == "Test Stock has been added to your investments."
+latestHistoryID = history[0]["id"]
 
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
@@ -84,9 +84,9 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "Test Stock had its revenue and dividends changed."
+assert history[0]["entry"] == "Test Stock had its revenue and dividends changed."
 
-latestHistoryID = history[historyLength - 1]["id"]
+latestHistoryID = history[0]["id"]
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
 assert historyResponse.status_code == 200
@@ -113,9 +113,9 @@ assert historyResponse.status_code == 200
 history = historyResponse.json()
 historyLength = len(history)
 
-assert history[historyLength - 1]["entry"] == "Test Stock has been deleted from your investments."
+assert history[0]["entry"] == "Test Stock has been deleted from your investments."
 
-latestHistoryID = history[historyLength - 1]["id"]
+latestHistoryID = history[0]["id"]
 
 historyResponse = requests.delete(HISTORY_ENDPOINT + "/" + str(latestHistoryID), headers=requestHeaders, verify=False)
 assert historyResponse.status_code == 200
