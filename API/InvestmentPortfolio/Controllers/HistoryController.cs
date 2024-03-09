@@ -17,7 +17,7 @@ namespace InvestmentPortfolio.Controllers
     [HttpGet]
     public async Task<ActionResult<List<History>>> GetHistory()
     {
-      return Ok(await _context.History.ToListAsync());
+      return Ok(await _context.History.OrderByDescending(entry => entry.Entry_Date).ToListAsync());
     }
 
     [HttpGet("{id}")]
@@ -38,7 +38,7 @@ namespace InvestmentPortfolio.Controllers
         _context.History.Add(history);
         await _context.SaveChangesAsync();
 
-        return Ok(await _context.History.ToListAsync());
+      return Ok(await _context.History.OrderByDescending(entry => entry.Entry_Date).ToListAsync());
       }
     }
 
@@ -53,7 +53,7 @@ namespace InvestmentPortfolio.Controllers
       _context.History.Remove(DBhistory);
       await _context.SaveChangesAsync();
 
-      return Ok(await _context.History.ToListAsync());
+      return Ok(await _context.History.OrderByDescending(entry => entry.Entry_Date).ToListAsync());
     }
   }
 }

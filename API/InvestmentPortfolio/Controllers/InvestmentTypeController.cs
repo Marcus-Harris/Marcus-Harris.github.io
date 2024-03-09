@@ -57,7 +57,7 @@ namespace InvestmentPortfolio.Controllers
         return BadRequest("Investment Type Does Not Exist!");
 
       History history = new History();
-      history.Entry = DBtype.Type + " has renamed as " + investmentType.Type + ".";
+      history.Entry = DBtype.Type + " has been renamed as " + investmentType.Type + ".";
       history.Type = "Investment Type";
 
       DBtype.Type = investmentType.Type;
