@@ -14,8 +14,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/my-portfolio",
-            "index": "src/index.html",
-            "main": "src/main.ts",
+            "index": "../index.html",
+            "main": "../main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -25,7 +25,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "../styles.css"
             ],
             "scripts": []
           },
