@@ -20,6 +20,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "InvestmentOrigins",
   policy =>
   {
     policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    policy.WithOrigins("https://marcus-harris.github.io/MyPortfolioApplication/my-portfolio").AllowAnyMethod().AllowAnyHeader();
   }));
 
 var app = builder.Build();
