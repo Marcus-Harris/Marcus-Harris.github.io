@@ -19,8 +19,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddCors(options => options.AddPolicy(name: "InvestmentOrigins",
   policy =>
   {
-    policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-    policy.WithOrigins("https://marcus-harris.github.io").AllowAnyMethod().AllowAnyHeader();
+    policy.WithOrigins("http://localhost:4200", "https://marcus-harris.github.io").AllowAnyMethod().AllowAnyHeader();
   }));
 
 var app = builder.Build();
